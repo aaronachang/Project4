@@ -1,1 +1,1 @@
-# Project4
+# Critter Simulator
