@@ -68,7 +68,24 @@ public class Main {
         /* Do not alter the code above for your submission. */
         /* Write your code below. */
         
-        System.out.println("GLHF");
+        System.out.println("Critter");
+        
+        while (kb.hasNextLine()){
+            String input = kb.nextLine();
+            
+            try{
+                /* Write cases and code here for:
+                 * quit
+                 * show
+                 * step
+                 * seed
+                 * make 
+                 * stats
+                 */
+            }
+            catch (Exception e){
+                // Code for exception
+            }
         
         /* Write your code above */
         System.out.flush();
