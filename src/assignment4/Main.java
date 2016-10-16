@@ -68,7 +68,7 @@ public class Main {
         /* Do not alter the code above for your submission. */
         /* Write your code below. */
         
-        System.out.println("Critter");
+        System.out.println("critter> ");
         
         while (kb.hasNextLine()){
             String input = kb.nextLine();
