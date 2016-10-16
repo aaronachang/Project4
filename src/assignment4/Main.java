@@ -75,12 +75,13 @@ public class Main {
             String input = kb.nextLine();
             
             try{
-            	
+            	// Split the command into words
             	String[] user_args = input.split("\\s+");
                 
             	switch (user_args[0].toLowerCase()){
             	
             	case "quit": if (user_args.length > 1) throw new Exception();
+							System.out.println("exiting..."); // for debugging purposes
             						System.exit(0);
             						break;
             						
