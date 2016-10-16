@@ -11,6 +11,7 @@
  */
 package assignment4; // cannot be in default package
 import java.util.Scanner;
+import java.util.List;
 import java.io.*;
 
 
@@ -74,21 +75,72 @@ public class Main {
             String input = kb.nextLine();
             
             try{
-                /* Write cases and code here for:
-                 * quit
-                 * show
-                 * step
-                 * seed
-                 * make 
-                 * stats
-                 */
-            }
-            catch (Exception e){
+            	
+            	String[] user_args = input.split("\\s+");
+                
+            	switch (user_args[0].toLowerCase()){
+            	
+            	case "quit": if (user_args.length > 1) throw new Exception();
+            						System.exit(0);
+            						break;
+            						
+            	case "show": if (user_args.length > 1) throw new Exception();
+            						Critter.displayWorld();
+            						break;
+				
+            	case "step": if (user_args.length > 2) throw new Exception();
+            						int steps;
+            						
+            						if (user_args.length > 1){
+            							steps = Integer.parseInt(user_args[1]);
+            						}
+            						else{
+            							steps = 1;
+            						}
+            						
+            						for (int i = 0; i < steps; i++){
+            							Critter.worldTimeStep();
+            						}
+            						break;
+            						
+            	case "seed": if (user_args.length > 2) throw new Exception();
+            						Critter.setSeed(Long.parseLong(user_args[1]));
+            						break;
+            						
+            	case "make": if (user_args.length > 3) throw new Exception();
+            						int amount;
+            						
+            						if (user_args.length > 2){
+            							amount = Integer.parseInt(user_args[2]);
+            						}
+            						else{
+            							amount = 1;
+            						}
+            						
+            						for (int i = 0; i < amount; i++){
+            							Critter.makeCritter(user_args[1]);
+            						}
+            						break;
+            						
+            	case "stats": if (user_args.length > 2) throw new Exception();
+            						List<Critter> crts = Critter.getInstances(user_args[1]);
+            						Class<?> classes = Class.forName(user_args[1]);
+            						classes.getMethod("runStats", java.util.List.class).invoke(null, crts);
+            						break;
+            						
+				default: 	 System.out.println("Not a valid command: " + input);
+							
+            	}
+            } catch (Exception e){
                 // Code for exception
+            	System.out.println("Error in user input: " + input);
             }
+            System.out.print("critter> ");
+            
+        }
+        kb.close();
         
         /* Write your code above */
         System.out.flush();
-
     }
 }
