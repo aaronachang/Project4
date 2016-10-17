@@ -142,6 +142,6 @@ public class Main {
         kb.close();
         
         /* Write your code above */
-        System.out.flush();
+        //System.out.flush();
     }
 }
