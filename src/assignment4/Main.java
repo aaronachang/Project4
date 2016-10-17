@@ -81,7 +81,6 @@ public class Main {
             	switch (user_args[0].toLowerCase()){
             	
             	case "quit": if (user_args.length > 1) throw new Exception();
-							System.out.println("exiting..."); // for debugging purposes
             						System.exit(0);
             						break;
             						
@@ -142,6 +141,6 @@ public class Main {
         kb.close();
         
         /* Write your code above */
-        //System.out.flush();
+        System.out.flush();
     }
 }

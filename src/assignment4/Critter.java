@@ -254,14 +254,14 @@ public abstract class Critter {
 			int temp_x = (p.x + dir[direction].x) % Params.world_width;
 			int temp_y = (p.y + dir[direction].y) % Params.world_height;
 			Point temp_p = new Point(temp_x, temp_y);
-			if (!world.containsKey(temp_p) && world.get(temp_p).size() == 0) { return direction; }
+			if (!world.containsKey(temp_p) || world.get(temp_p).size() == 0) { return direction; }
 		}
 		
 		for (int direction = 0; direction < 8; direction++) { // run if walk isn't an option
 			int temp_x = (p.x + 2 * dir[direction].x) % Params.world_width;
 			int temp_y = (p.y + 2 * dir[direction].y) % Params.world_height;
 			Point temp_p = new Point(temp_x, temp_y);
-			if (!world.containsKey(temp_p) && world.get(temp_p).size() == 0) { return direction + 8; }
+			if (!world.containsKey(temp_p) || world.get(temp_p).size() == 0) { return direction + 8; }
 		}
 		
 		return -1; // cannot walk or run
