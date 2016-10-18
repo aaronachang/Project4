@@ -117,7 +117,7 @@ public abstract class Critter {
 		Object instanceOfMyCritter = null;
 
 	    try {
-			myCritter = Class.forName(critter_class_name);
+			myCritter = Class.forName("assignment4." + critter_class_name);
 		    constructor = myCritter.getConstructor(); // get null parameter constructor
 		    instanceOfMyCritter = constructor.newInstance(); // create instance
 		    Critter me = (Critter) instanceOfMyCritter; // cast to Critter
@@ -341,7 +341,7 @@ public abstract class Critter {
 		// Add algae
 		try {
 			for (int i = 0; i < Params.refresh_algae_count; i++)
-				makeCritter("assignment4.Algae");
+				makeCritter("Algae");
 		} catch (InvalidCritterException e) {
 			e.printStackTrace();
 		}
