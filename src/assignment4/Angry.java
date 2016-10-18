@@ -1,4 +1,4 @@
-/* CRITTERS InvalidCritterException.java
+/* CRITTERS Angry.java
  * EE422C Project 4 submission by
  * Aaron Chang
  * AAC3434
