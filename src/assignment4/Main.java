@@ -139,7 +139,7 @@ public class Main {
             	}
             } catch (Exception e){
                 // Code for exception
-            	System.out.println("Error in user input: " + input);
+            	System.out.println("error processing: " + input);
             }
             
             if (exit) {
