@@ -62,24 +62,38 @@ public abstract class Critter {
 	public String toString() { return "*"; }
 	
 	private int energy = Params.start_energy;
+	
+	//Simply returns the current energy for the Critter
 	protected int getEnergy() { return energy; }
 	
 	private boolean hasMoved;
 	private int x_coord;
 	private int y_coord;
 	
-    private void move(int direction) {
-    	x_coord = (x_coord + dir[direction].x) % Params.world_width;
-    	y_coord = (y_coord + dir[direction].y) % Params.world_height;
-    	hasMoved = true;
-    }
+	/**
+	 * This methods navigates the Critter given a specific direction and updates hasMoved
+	 * @param direction manipulates where the new coordinate pair should be
+	 */    	
+	private void move(int direction) {
+    		x_coord = (x_coord + dir[direction].x) % Params.world_width;
+    		y_coord = (y_coord + dir[direction].y) % Params.world_height;
+    		hasMoved = true;
+   	}
 	
+	/**
+    	 * Moves the critter in a specified direction, by subtracting walk_energy_cost from energy
+    	 * @param direction specifies where the critter should walk
+     	 */	
 	protected final void walk(int direction) {
 		energy -= Params.walk_energy_cost;
 		if (energy >= 0)
 			move(direction);
 	}
 	
+	/**
+	 * Calls move twice to simulate running relatively to the walk method, by subtracting run_energy_cost from energy
+     	 * @param direction specifies where the critter should run
+	 */	
 	protected final void run(int direction) {
 		energy -= Params.run_energy_cost;
 		if (energy >= 0) {
@@ -88,6 +102,11 @@ public abstract class Critter {
 		}
 	}
 	
+	/**
+	 * makes another critter, given a critter object that is a child of the critter
+	 * @param offspring is the child critter object
+	 * @param direction specifies how the child of the critter will move
+	 */	
 	protected final void reproduce(Critter offspring, int direction) {
 		if (energy < Params.min_reproduce_energy) { return; }
 		
@@ -98,14 +117,17 @@ public abstract class Critter {
 		offspring.y_coord = (x_coord + dir[direction].x) % Params.world_width;
 		babies.add(offspring);
 	}
-
+	
+	//Abstract methods for which code is specified in Critter subclasses	
 	public abstract void doTimeStep();
+	
+	//fight will return true will fight or false (won't fight) based on the opponent String	
 	public abstract boolean fight(String opponent);
 	
 	/**
 	 * create and initialize a Critter subclass.
 	 * critter_class_name must be the unqualified name of a concrete subclass of Critter, if not,
-	 * an InvalidCritterException must be thrown.
+	 * an InvalidCritterException is thrown.
 	 * (Java weirdness: Exception throwing does not work properly if the parameter has lower-case instead of
 	 * upper. For example, if craig is supplied instead of Craig, an error is thrown instead of
 	 * an Exception.)
@@ -270,6 +292,10 @@ public abstract class Critter {
 		return -1; // cannot walk or run
 	}
 	
+	/**
+	 * Called by resolveEncounters(), specifies how a critter can ecape if it does't want to fight
+	 *
+	 */
 	private void tryToEscape() {
 		int escapeDir = nextAdjacentPoint(new Point(x_coord, y_coord));
 		if (hasMoved || escapeDir == -1) { energy -= Params.walk_energy_cost; } 
@@ -277,6 +303,9 @@ public abstract class Critter {
 		else { run(escapeDir - 8); }
 	}
 	
+	/**
+	 * Called by worldTimeStep, decides what a Critter should do when it encounters another Critter
+	 */	
 	private static void resolveEncounters() {
 		for (ArrayList<Critter> spot : world.values()) {
 			// if spot occupied by more than one critter
@@ -326,6 +355,10 @@ public abstract class Critter {
 	}
 	
 	private static int timestep = 0;
+	
+	/**
+	 * called by main when user enter the "step" command, calls resolveEncounters() and steps the critter
+	 */	
 	public static void worldTimeStep() {
 		timestep++;
 		for (ArrayList<Critter> spot : world.values()) {
@@ -372,6 +405,10 @@ public abstract class Critter {
 		}
 	}
 	
+	/**
+	 * Called by main when user enters the "show" command
+	 * essentially displays a map of the space or "world" the critters are in
+	 */	
 	public static void displayWorld() {
 		for (int i = -1; i <= Params.world_height; i++) {
 			for (int j = -1; j <= Params.world_width; j++) {
