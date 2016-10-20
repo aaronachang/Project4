@@ -244,6 +244,8 @@ public abstract class Critter {
 	public static void clearWorld() {
 		for (ArrayList<Critter> spot : world.values())
 			spot.clear();
+		population = new java.util.ArrayList<Critter>();
+		babies = new java.util.ArrayList<Critter>();
 	}
 	
 	/*
