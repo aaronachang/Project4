@@ -154,7 +154,7 @@ public abstract class Critter {
 		
 		for (ArrayList<Critter> bugs : world.values()) {
 			for (Critter bug : bugs) {
-				if (bug.getClass().getTypeName().equals(critter_class_name))
+				if (bug.getClass().getTypeName().equals("assignment4." + critter_class_name))
 					result.add(bug);
 			}
 		}

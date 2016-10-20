@@ -107,7 +107,7 @@ public class Main {
             			break;
             						
             		case "seed": 
-            			if (user_args.length > 2) throw new Exception();
+            			if (user_args.length != 2) throw new Exception();
             			Critter.setSeed(Long.parseLong(user_args[1]));
             			break;
             						
@@ -128,13 +128,13 @@ public class Main {
             			break;
             						
             		case "stats": 
-            			if (user_args.length > 2) throw new Exception();
+            			if (user_args.length != 2) throw new Exception();
             			List<Critter> crts = Critter.getInstances(user_args[1]);
-            			Class<?> classes = Class.forName(user_args[1]);
+            			Class<?> classes = Class.forName("assignment4." + user_args[1]);
             			classes.getMethod("runStats", java.util.List.class).invoke(null, crts);
             			break;
             						
-            		default: 	 
+            		default:
             			System.out.println("Not a valid command: " + input);
             	}
             } catch (Exception e){
