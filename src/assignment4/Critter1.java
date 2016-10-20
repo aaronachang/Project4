@@ -22,7 +22,7 @@ public class Critter1 extends Critter {
 	@Override
 	public void doTimeStep() {
 		//Critter1 walks around looking to fight
-		walk(Critter.getRandomInt(7));
+		walk(Critter.getRandomInt(5));
 		Critter1 child = new Critter1();
 		reproduce(child, getRandomInt(5));		
 	}
