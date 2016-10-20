@@ -23,7 +23,7 @@ public class Critter2 extends Critter {
 	public void doTimeStep(){
 		//Critter 2 will run
 		run(Critter.getRandomInt(7));
-		Angry child = new Angry();
+		Critter2 child = new Critter2();
 		reproduce(child, getRandomInt(7));
 	}
 	
