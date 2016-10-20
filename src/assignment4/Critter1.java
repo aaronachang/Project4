@@ -1,4 +1,4 @@
-/* CRITTERS Angry.java
+/* CRITTERS Critter1.java
  * EE422C Project 4 submission by
  * Aaron Chang
  * AAC3434
@@ -11,11 +11,11 @@
  */
 package assignment4;
 
-public class Angry extends Critter {
+public class Critter1 extends Critter {
 	
 	@Override
 	public String toString(){
-		return "A";
+		return "1";
 	}
 
 	@Override
