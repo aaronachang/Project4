@@ -20,15 +20,15 @@ public class Critter1 extends Critter {
 
 	@Override
 	public void doTimeStep() {
-		//Angry walks around looking to fight
-		walk(Critter.getRandomInt(10));
-		Angry child = new Angry();
+		//Critter1 walks around looking to fight
+		walk(Critter.getRandomInt(7));
+		Critter1 child = new Critter1();
 		reproduce(child, getRandomInt(5));		
 	}
 
 	@Override
-	public boolean fight(String oponent) {
-		//Angry likes to fight all the time
+	public boolean fight(String opponent) {
+		//Critter1 likes to fight all the time
 		return true;	
 	}
 }
