@@ -81,7 +81,7 @@ public abstract class Critter {
    	}
 	
 	/**
-    	 * Moves the critter in a specified direction, by subtracting walk_energy_cost from energy
+    	 *Subtracts critter walk_energy_cost from energy, then moves if critter still has energy
     	 * @param direction specifies where the critter should walk
      	 */	
 	protected final void walk(int direction) {
@@ -91,8 +91,8 @@ public abstract class Critter {
 	}
 	
 	/**
-	 * Calls move twice to simulate running relatively to the walk method, by subtracting run_energy_cost from energy
-     	 * @param direction specifies where the critter should run
+	 * Calls move twice to simulate running after subtracting run_energy_cost from energy
+     * @param direction specifies where the critter should run
 	 */	
 	protected final void run(int direction) {
 		energy -= Params.run_energy_cost;
@@ -105,7 +105,7 @@ public abstract class Critter {
 	/**
 	 * makes another critter, given a critter object that is a child of the critter
 	 * @param offspring is the child critter object
-	 * @param direction specifies how the child of the critter will move
+	 * @param direction specifies the direction the child of the critter will move
 	 */	
 	protected final void reproduce(Critter offspring, int direction) {
 		if (energy < Params.min_reproduce_energy) { return; }
@@ -293,8 +293,7 @@ public abstract class Critter {
 	}
 	
 	/**
-	 * Called by resolveEncounters(), specifies how a critter can ecape if it does't want to fight
-	 *
+	 * Called by resolveEncounters(), specifies how a critter can escape if it does't want to fight
 	 */
 	private void tryToEscape() {
 		int escapeDir = nextAdjacentPoint(new Point(x_coord, y_coord));
@@ -304,7 +303,7 @@ public abstract class Critter {
 	}
 	
 	/**
-	 * Called by worldTimeStep, decides what a Critter should do when it encounters another Critter
+	 * Called by worldTimeStep(), decides what a Critter should do when it encounters another Critter
 	 */	
 	private static void resolveEncounters() {
 		for (ArrayList<Critter> spot : world.values()) {
@@ -357,7 +356,7 @@ public abstract class Critter {
 	private static int timestep = 0;
 	
 	/**
-	 * called by main when user enter the "step" command, calls resolveEncounters() and steps the critter
+	 * Called by main when user enter the "step" command, calls resolveEncounters() and steps the critter
 	 */	
 	public static void worldTimeStep() {
 		timestep++;
@@ -407,7 +406,7 @@ public abstract class Critter {
 	
 	/**
 	 * Called by main when user enters the "show" command
-	 * essentially displays a map of the space or "world" the critters are in
+	 * displays a map of the space or "world" the critters are in
 	 */	
 	public static void displayWorld() {
 		for (int i = -1; i <= Params.world_height; i++) {
