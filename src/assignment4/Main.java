@@ -70,7 +70,7 @@ public class Main {
         /* Do not alter the code above for your submission. */
         /* Write your code below. */
         
-        System.out.println("critter> ");
+        System.out.println("critters>");
         
         while (kb.hasNextLine()) {
             String input = kb.nextLine();
@@ -101,7 +101,6 @@ public class Main {
             			else{
             				steps = 1;
             			}
-            						
             			for (int i = 0; i < steps; i++){
             				Critter.worldTimeStep();
             			}
@@ -136,7 +135,7 @@ public class Main {
             			break;
             						
             		default:
-            			System.out.println("Not a valid command: " + input);
+            			System.out.println("invalid command: " + input);
             	}
             } catch (Exception e){
                 // Code for exception
@@ -146,7 +145,7 @@ public class Main {
             if (exit) {
             	break;
             }
-            System.out.print("critter> ");
+            System.out.print("critters>");
         }
         kb.close();
         

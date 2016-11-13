@@ -34,13 +34,13 @@ public abstract class Critter {
 	
 	private static final Point[] dir = {
 			new Point(1, 0),
-			new Point(1, 1),
-			new Point(0, 1),
-			new Point(-1, 1),
-			new Point(-1, 0),
-			new Point(-1, -1),
+			new Point(1, -1),
 			new Point(0, -1),
-			new Point(1, -1)
+			new Point(-1, -1),
+			new Point(-1, 0),
+			new Point(-1, 1),
+			new Point(0, 1),
+			new Point(1, 1)
 		};
 
 	// Gets the package name.  This assumes that Critter and its subclasses are all in the same package.
@@ -67,6 +67,7 @@ public abstract class Critter {
 	protected int getEnergy() { return energy; }
 	
 	private boolean hasMoved;
+	private static boolean isFighting;
 	private int x_coord;
 	private int y_coord;
 	
@@ -74,9 +75,19 @@ public abstract class Critter {
 	 * This methods navigates the Critter given a specific direction and updates hasMoved
 	 * @param direction manipulates where the new coordinate pair should be
 	 */    	
-	private void move(int direction) {
-    		x_coord = (x_coord + dir[direction].x) % Params.world_width;
-    		y_coord = (y_coord + dir[direction].y) % Params.world_height;
+	private void move(int steps, int direction) {
+		int tempX = (x_coord + dir[direction].x * steps) % Params.world_width;
+		if (tempX < 0) tempX += Params.world_width;
+		int tempY = (y_coord + dir[direction].y * steps) % Params.world_height;
+		if (tempY < 0) tempY += Params.world_height;
+		if (isFighting) {
+			Point position = new Point(tempX, tempY);
+			if (world.get(position).size() > 0) {
+				return;
+			}
+		}
+    		x_coord = tempX;
+    		y_coord = tempY;
     		hasMoved = true;
    	}
 	
@@ -86,8 +97,8 @@ public abstract class Critter {
      	 */	
 	protected final void walk(int direction) {
 		energy -= Params.walk_energy_cost;
-		if (energy >= 0)
-			move(direction);
+		if (energy >= 0 && !hasMoved)
+			move(1, direction);
 	}
 	
 	/**
@@ -96,9 +107,9 @@ public abstract class Critter {
 	 */	
 	protected final void run(int direction) {
 		energy -= Params.run_energy_cost;
-		if (energy >= 0) {
-			move(direction);
-			move(direction);
+		
+		if (energy >= 0 && !hasMoved) {
+			move(2, direction);
 		}
 	}
 	
@@ -114,7 +125,9 @@ public abstract class Critter {
 		energy = energy % 2 == 0 ? energy / 2 : energy / 2 + 1;
 		
 		offspring.x_coord = (x_coord + dir[direction].x) % Params.world_width;
-		offspring.y_coord = (x_coord + dir[direction].x) % Params.world_width;
+		if (offspring.x_coord < 0) offspring.x_coord += Params.world_width;
+		offspring.y_coord = (y_coord + dir[direction].y) % Params.world_width;
+		if (offspring.y_coord < 0) offspring.y_coord += Params.world_height;
 		babies.add(offspring);
 	}
 	
@@ -219,16 +232,28 @@ public abstract class Critter {
 	 * so that they correctly update your grid/data structure.
 	 */
 	static abstract class TestCritter extends Critter {
+		private void resetWorld() {
+			for (ArrayList<Critter> spot : world.values())
+				spot.clear();
+			
+			for (Critter bug : population) {
+				Point p = new Point(bug.x_coord, bug.y_coord);
+				if (!world.containsKey(p)) { world.put(p, new ArrayList<Critter>()); }
+				world.get(p).add(bug);
+			}
+		}
 		protected void setEnergy(int new_energy_value) {
 			super.energy = new_energy_value;
 		}
 		
 		protected void setX_coord(int new_x_coord) {
 			super.x_coord = new_x_coord;
+			resetWorld();
 		}
 		
 		protected void setY_coord(int new_y_coord) {
 			super.y_coord = new_y_coord;
+			resetWorld();
 		}
 		
 		protected int getX_coord() {
@@ -293,16 +318,6 @@ public abstract class Critter {
 	}
 	
 	/**
-	 * Called by resolveEncounters(), specifies how a critter can escape if it does't want to fight
-	 */
-	private void tryToEscape() {
-		int escapeDir = nextAdjacentPoint(new Point(x_coord, y_coord));
-		if (hasMoved || escapeDir == -1) { energy -= Params.walk_energy_cost; } 
-		else if (escapeDir < 8) { walk(escapeDir); }
-		else { run(escapeDir - 8); }
-	}
-	
-	/**
 	 * Called by worldTimeStep(), decides what a Critter should do when it encounters another Critter
 	 */	
 	private static void resolveEncounters() {
@@ -311,62 +326,64 @@ public abstract class Critter {
 			while (spot.size() > 1) {
 				Critter critA = spot.get(0);
 				Critter critB = spot.get(1);
-				Point fightPoint = new Point(critA.x_coord, critA.y_coord); 
+				//Point fightPoint = new Point(critA.x_coord, critA.y_coord); 
 				boolean fightA = critA.fight(critB.toString());
 				boolean fightB = critB.fight(critA.toString());
-				
-				if (!fightA) { critA.tryToEscape(); }
-				if (!fightB) { critB.tryToEscape(); }
-				if (critA.energy <= 0 || critB.energy <= 0) {
-					if (critB.energy <= 0) {
-						spot.remove(critB);
-						population.remove(critB);
-					}
-					if (critA.energy <= 0) { 
-						spot.remove(critA); 
-						population.remove(critA); 
-					}
-				} else if (critA.x_coord == fightPoint.x && critA.y_coord == fightPoint.y && 
-						   critB.x_coord == fightPoint.x && critB.y_coord == fightPoint.y) {
-					//fight
-					int rollA = getRandomInt(critA.energy);
-					int rollB = getRandomInt(critB.energy);
+				if(critA.hasMoved) break;
+				if (critA.energy <= 0) {
+					spot.remove(critA);
+					population.remove(critA);
+					return;
+				}
+				if (critB.energy <= 0) {
+					spot.remove(critB);
+					population.remove(critB);
+					return;
+				}
+				int rollA = fightA ? getRandomInt(critA.energy) : 0;
+				int rollB = fightB ? getRandomInt(critB.energy) : 0;
+				if (rollA == rollB){
+					rollA = getRandomInt(critA.energy);
+					rollB = getRandomInt(critB.energy);
 					
-					if (rollA > rollB) { 
-						critA.energy += .5 * critB.energy;
-						spot.remove(critB);
-						population.remove(critB);
-					} else {
-						critB.energy += .5 * critA.energy;
-						spot.remove(critA);
-						population.remove(critA);
+					if (getRandomInt(2) == 1) {
+						rollA += 1;
 					}
-				} else { // remove from spot if critter moved
-					if (!(critB.x_coord == fightPoint.x && critB.y_coord == fightPoint.y)) {
-						spot.remove(critB);
-					}
-					if (!(critA.x_coord == fightPoint.x && critA.y_coord == fightPoint.y)) {
-						spot.remove(critA);
-					}
+					else {
+						rollB += 1;
+					} 
+				}
+				if (rollA > rollB){
+					critA.energy += .5 * critB.energy;
+					critB.energy = 0;
+					spot.remove(critB);
+					population.remove(critB);
+				} else if (rollA < rollB) {
+					critB.energy += .5 * critA.energy;
+					critA.energy = 0;
+					spot.remove(critA);
+					population.remove(critA);
 				}
 			}
 		}
 	}
 	
-	private static int timestep = 0;
+	//private static int timestep = 0;
 	
 	/**
 	 * Called by main when user enter the "step" command, calls resolveEncounters() and steps the critter
 	 */	
 	public static void worldTimeStep() {
-		timestep++;
+//		timestep++;
 		for (ArrayList<Critter> spot : world.values()) {
 			for (Critter bug : spot) {
 				bug.hasMoved = false;
 				bug.doTimeStep();
 			}
 		}
+		isFighting = true;
 		resolveEncounters();
+		isFighting = false;
 		
 		// Update rest energy
 		for (ArrayList<Critter> spot : world.values())
@@ -392,6 +409,7 @@ public abstract class Critter {
 				
 		// Add babies to population
 		population.addAll(babies);
+		babies.clear();
 		
 		// Clear and update critter map
 		for (ArrayList<Critter> spot : world.values())
